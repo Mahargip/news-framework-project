@@ -13,15 +13,15 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{-- isi dari posts --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
                         @foreach ($posts as $post)
                             <a href="{{ route('post.show', ['id' => $post->id]) }}" class="block">
                                 <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                                    <img class="w-full" src="../storage/app/image/{{ $post->image }}" alt="{{ $post->title }}">
+                                    <img class="w-full h-auto" src="../storage/app/image/{{ $post->image }}" alt="{{ $post->title }}">
                                     <div class="px-6 py-4">
                                         <div class="font-bold text-xl mb-2">{{ $post->title }}</div>
                                         <p class="text-gray-400 text-base">
-                                            {{ substr($post->news_content, 0, strpos($post->news_content, '.', 10) + 1) }}
+                                            {{ limit_words($post->news_content, 20) }} . . .
                                         </p>
                                     </div>
                                     <div class="px-6 pt-4 pb-2">

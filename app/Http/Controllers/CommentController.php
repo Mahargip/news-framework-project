@@ -14,6 +14,24 @@ class CommentController extends Controller
 {
     use SoftDeletes;
 
+    public function indexView(Request $request)
+    {
+        // // dd($posts->data);
+        // $comments = json_decode(Http::post('http://localhost/BreezeShop/public/api/comments'));
+        // // return dd($comments->data);
+        // return redirect()->route('posts.show', ['id' => $comments->data->post_id]);
+
+        $validated = $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'comments_content' => 'required',
+        ]);
+
+        $request['user_id'] = auth()->user()->id;
+
+        $comment = Comment::create($request->all());
+        return redirect()->route('post.show', ['id' => $validated['post_id']]);
+    }
+
     public function index()
     {
         $comment = Comment::latest()->get();
@@ -30,7 +48,6 @@ class CommentController extends Controller
         $request['user_id'] = auth()->user()->id;
 
         $comment = Comment::create($request->all());
-
         return new CommentResource($comment->loadMissing(['commentator:id,name']));
     }
 
@@ -44,20 +61,6 @@ class CommentController extends Controller
         $comment->update($request->only('comments_content'));
 
         return new CommentResource($comment->loadMissing(['commentator:id,name']));
-
-        // try {
-        //     $comment = Comment::find($id);
-
-        //     if (!$comment) {
-        //         return $this->error(null, 'Comment not found', 404);
-        //     }
-
-        //     $comment->update($request->only([
-        //         'comments_content'
-        //     ]));
-        // } catch (Exception $e) {
-        //     return $this->error(null, $e, 500);
-        // }
     }
 
     public function destroy($id)
@@ -65,21 +68,6 @@ class CommentController extends Controller
         $comment = Comment::findOrFail($id);
         $comment->delete();
 
-        return new CommentResource($comment->loadMissing(['commentator:id,name']));
-
-        // try {
-        //     $comment = Comment::find($id);
-
-        //     if (!$comment) {
-        //         return $this->error(null, 'Comment not found', 404);
-        //     }
-
-        //     $comment->delete();
-
-        //     return $this->success($comment, 'Comment deleted successfully');
-        // } catch (Exception $e) {
-        //     return $this->error(null, $e, 500);
-        // }
     }
 
     public function showCreateForm(){

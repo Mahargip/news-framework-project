@@ -22,13 +22,14 @@ class AuthenticationController extends Controller
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email'=> ['The provided credentials are incorrect.'],
-            ])->redirectTo(route('posts'));
-        }
+                ])->redirectTo(route('posts'));
+            }
 
-        $token = $user->createToken('user login')->plainTextToken;
-        return $token;
-        // return redirect()->route('posts')->cookie('api_token', $token, 60)->withSuccess('Login Successful');
-    }
+            $token = $user->createToken('user login')->plainTextToken;
+            // dd($token);
+            return $token;
+            // return redirect()->route('posts')->cookie('api_token', $token, 60)->withSuccess('Login Successful');
+        }
 
 
     /////////////
